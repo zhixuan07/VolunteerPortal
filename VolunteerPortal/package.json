@@ -11,7 +11,12 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "firebase": "^10.13.0",
     "nuxt": "^3.13.0",
+    "nuxt-vuefire": "^1.0.4",
     "vue": "latest"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.10"
   }
 }
