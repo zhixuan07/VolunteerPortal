@@ -1,6 +1,12 @@
 <script setup lang="ts">
 const mobileMenuOpen = ref(false);
+import { useFirebaseAuth } from '~/composables/useFirebaseAuth';
 
+async function logout() {
+    const auth = useFirebaseAuth();
+    auth.logout();
+    reloadNuxtApp();
+}
 
 const toggleNav   = () => {
     mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -8,18 +14,17 @@ const toggleNav   = () => {
 };</script>
 
 <template>
-  <div class="flex">
+<div class="flex">
     <div>
       <aside
-        class="bg-[#1c212c] h-screen w-64 hidden sm:flex flex-col items-center pt-5 pb-2 space-y-7 relative"
+        class="bg-orange-600 h-screen w-64 hidden sm:flex flex-col items-center pt-5 pb-2 space-y-7 relative"
       >
         <div
-          class="w-full pr-3 pl-4 flex flex-col gap-y-1 text-gray-500 fill-gray-500 text-sm"
+          class="w-full pr-3 pl-4 flex flex-col gap-y-1 text-white fill-white text-sm"
         >
           <div
-            class="font-QuicksandMedium pl-4 text-gray-400/60 flex gap-2 items-center text-[15px] uppercase"
+            class="font-QuicksandMedium pl-4 text-orange-200/80 flex gap-2 items-center text-[15px] uppercase"
           >
-           
             VConnect
           </div>
 
@@ -28,15 +33,14 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <NuxtLink to="/admin" class="font-QuicksandMedium"
-                >   Account Applications</NuxtLink
+              <NuxtLink to="/admin" class="font-QuicksandMedium text-white"
+                >Account Applications</NuxtLink
               >
             </div>
           </div>
@@ -46,14 +50,13 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <NuxtLink to="/admin/organisations" class="font-QuicksandMedium"
+              <NuxtLink to="/admin/organisations" class="font-QuicksandMedium text-white"
                 >Manage Organisations</NuxtLink
               >
             </div>
@@ -64,15 +67,14 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <router-link to="/admin/reports" class="font-QuicksandMedium"
-                >Reports</router-link
+              <NuxtLink to="/admin/reports" class="font-QuicksandMedium text-white"
+                ></NuxtLink
               >
             </div>
           </div>
@@ -82,26 +84,25 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <router-link class="font-QuicksandMedium" to="/adminAppointment"
-                ></router-link
+              <NuxtLink class="font-QuicksandMedium text-white" to="/"
+                ></NuxtLink
               >
             </div>
           </div>
         </div>
 
-        <!-- menu items -->
+        <!-- Profile Section -->
         <div
-          class="w-full pr-3 pl-4 flex flex-col gap-y-1 text-gray-500 fill-gray-500 text-sm"
+          class="w-full pr-3 pl-4 flex flex-col gap-y-1 text-white fill-white text-sm"
         >
           <div
-            class="font-QuicksandMedium pl-4 text-gray-400/60 text-xs text-[11px] uppercase"
+            class="font-QuicksandMedium pl-4 text-orange-200/80 text-xs text-[11px] uppercase"
           >
             Profile
           </div>
@@ -111,14 +112,13 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <span class="font-QuicksandMedium">edit profile</span>
+              <span class="font-QuicksandMedium text-white">Edit Profile</span>
             </div>
           </div>
 
@@ -127,14 +127,13 @@ const toggleNav   = () => {
               class="w-1 rounded-xl h-8 bg-transparent transition-colors duration-200 relative overflow-hidden"
             >
               <div
-                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-red-600 transition-all duration-300"
+                class="absolute top-0 left-0 w-full h-[102%] translate-y-full group-hover:translate-y-0 bg-white transition-all duration-300"
               ></div>
             </div>
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
-              href="#"
+              class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <span class="font-QuicksandMedium">log out</span>
+              <span @click="logout" class="font-QuicksandMedium text-white">Log Out</span>
             </div>
           </div>
         </div>
@@ -142,7 +141,7 @@ const toggleNav   = () => {
     </div>
 
     <div class="flex-grow h-screen overflow-x-auto">
-      <div class="sm:hidden w-screen sticky top-0 bg-[#1c212c]">
+      <div class="sm:hidden w-screen sticky top-0 bg-orange-500">
         <div
           @click="toggleNav"
           class="flex justify-start items-center h-10 md:hidden"
@@ -151,7 +150,7 @@ const toggleNav   = () => {
             <svg viewBox="0 0 24 24" class="w-7 h-7 fill-current">
               <path
                 fill-rule="evenodd"
-                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
+                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
               ></path>
             </svg>
           </button>
@@ -159,13 +158,12 @@ const toggleNav   = () => {
         <nav :class="mobileMenuOpen ? 'flex-col' : 'hidden'">
           <div class="w-full flex items-center gap-x-1.5 group select-none">
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-80 self-stretch pl-1 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
+              class="group-hover:bg-white/10 w-full group-active:scale-80 self-stretch pl-1 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
               href="#"
             >
-              <routerLink
-                to="/adminDashboard"
+              <NuxtLink
                 class="font-QuicksandMedium text-white ml-4 text-lg"
-                >Home</routerLink
+                >Home</NuxtLink
               >
             </div>
           </div>
@@ -173,21 +171,22 @@ const toggleNav   = () => {
             class="w-full flex flex-col items-center gap-x-1.5 group select-none"
           >
             <div
-              class="group-hover:bg-white/10 w-full group-active:scale-80 self-stretch pl-1 rounded flex items-center space-x-2 transition-all duration-200 dark:group-hover:text-white dark:hover:text-white text-sm"
+              class="group-hover:bg-white/10 w-full group-active:scale-80 self-stretch pl-1 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
               href="#"
             >
-              <routerLink
-                to="/adminDashboard"
+              <NuxtLink
+                to="/"
                 class="font-QuicksandMedium text-white ml-4 text-lg"
-                >Home</routerLink
+                >Dashboard</NuxtLink
               >
             </div>
           </div>
         </nav>
       </div>
-      <slot></slot>
+      <RouterView></RouterView>
     </div>
   </div>
+
 </template>
 
 <style scoped></style>
