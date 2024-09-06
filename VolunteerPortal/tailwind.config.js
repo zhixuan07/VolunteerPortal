@@ -4,6 +4,15 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: [
+      {
+        'mytheme': {
+          'primary': '#FF4800',
+        }
+      }],
+  }
+
 }
 
