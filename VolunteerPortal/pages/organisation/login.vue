@@ -9,7 +9,7 @@ definePageMeta({
 
 <template>
     <div>
-        <Login name="Admin Portal" :routeLocation=APPURL.ADMIN_INDEX />
+        <Login name="Organisation Portal" :routeLocation=APPURL.ORG_DASHBOARD />
     </div>
 </template>
 
