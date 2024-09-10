@@ -8,7 +8,7 @@ export  const APPURL ={
  ORG_LOGIN:'/organisation/login',
  ORG_REGISTER:'/organisation/register',
  ORG_DASHBOARD:'/organisation/',
- ORG_EVENTS:'/organisation/events/',
+ ORG_EVENTS:'/organisation/events',
  ORG_CREATE_EVENT:'/organisation/events/createEvent',
 
 }
