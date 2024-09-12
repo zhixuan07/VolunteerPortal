@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc,query, documentId, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc,query, documentId, where, setDoc } from "firebase/firestore";
 import { useUploadFile } from "./useUpload";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 export function useEvent(){
@@ -11,16 +11,22 @@ export function useEvent(){
         try {
             // Upload the event image to Firebase
             const imageURL = await uploadFile(storageLocation, eventImage);
-            event.image = imageURL;
-            event.orgId = userID;
-            const docRef = await addDoc(collection(firestore, "events"), event);
-        
-            console.log("Document written with ID: ", docRef.id);
+            if(!imageURL){
+                console.error("Error uploading image");
+                return false;
+            }else{
 
-            return docRef.id;
+                event.image = imageURL;
+                event.orgId = userID;
+                event.status = "ongoing";
+                const docRef = await addDoc(collection(firestore, "events"), event);
+                await setDoc(docRef, { id: docRef.id }, { merge: true });
+                return true;
+            }
+           
         } catch (e) {
             console.error("Error adding document: ", e);
-            return null;
+            return false;
         }
     }
     const getEvent = async (docId: any) => {

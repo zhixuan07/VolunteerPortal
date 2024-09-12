@@ -1,55 +1,53 @@
-import { getDatabase,ref as dbRef,update,get } from "firebase/database";
+import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
-export function useApplication(){
-    
-    const retreiveOrganisationApplications = async () => {
-        const db = getDatabase();
-        const orgRef = dbRef(db, "organisationApplications");
-        const snapshot = await get(orgRef);
+
+export function useApplication() {
+    const db = getFirestore();
+
+    const retrieveOrganisationApplications = async () => {
         const orgApplications: any[] = [];
-        snapshot.forEach((childSnapshot) => {
-          const childData = childSnapshot.val();
-          orgApplications.push({
-            id: childSnapshot.key,
-            orgName: childData.orgName,
-            email: childData.email,
-            phoneNumber: childData.phoneNumber,
-            ssmNumber: childData.ssmNumber,
-            ssmCertificateUrl: childData.ssmCertificateUrl,
-            status: childData.status,
-          });
+        const querySnapshot = await getDocs(collection(db, "organisationApplications"));
+        querySnapshot.forEach((doc) => {
+            orgApplications.push({
+                id: doc.id,
+                ...doc.data()
+            });
         });
         return orgApplications;
     };
-    const approveOrganisationApplication= async (orgId:string) => {
-        try{
-            const db = getDatabase();
-            const orgRef = dbRef(db, `organisationApplications/${orgId}`);
-            const orgEmail = (await get(orgRef)).val().email;
-         
-            const accountRegistered = await useFirebaseAuth().registerOrganisationAccount(orgEmail);
-            if(accountRegistered){
-                await update(orgRef, { status: "approved" });
-                return true;
-            }
+
+    const approveOrganisationApplication = async (orgId: string) => {
+        try {
+            const orgRef = doc(db, "organisationApplications", orgId);
+            const orgSnap = await getDoc(orgRef);
             
-        }catch(error){
+            if (orgSnap.exists()) {
+                const orgData = orgSnap.data();
+                const orgEmail = orgData.email;
+
+                const accountRegistered = await useFirebaseAuth().registerOrganisationAccount(orgEmail);
+                if (accountRegistered) {
+                    await updateDoc(orgRef, { status: "approved" });
+                    return true;
+                }
+            }
+            return false;
+        } catch (error) {
             console.error("Error approving organisation account:", error);
             return false;
         }
-       
     };
-    const rejectOrganisationApplication = async (orgId:string) => {
-        try{
-            const db = getDatabase();
-            const orgRef = dbRef(db, `organisationApplications/${orgId}`);
-            await update(orgRef, { status: "rejected" });
+
+    const rejectOrganisationApplication = async (orgId: string) => {
+        try {
+            const orgRef = doc(db, "organisationApplications", orgId);
+            await updateDoc(orgRef, { status: "rejected" });
             return true;
-        }catch(error){
+        } catch (error) {
             console.error("Error rejecting organisation account:", error);
             return false;
         }
     };
 
-    return {retreiveOrganisationApplications,approveOrganisationApplication,rejectOrganisationApplication};
+    return { retrieveOrganisationApplications, approveOrganisationApplication, rejectOrganisationApplication };
 }
