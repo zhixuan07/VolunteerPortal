@@ -95,6 +95,38 @@ export function useEvent(){
             return false;
         }
     }
+    const getEventParticipants = async (eventId: string) => {
+            const q = query(collection(firestore,"applications"), where("event_id", "==", eventId));
+            const applicationSnapshots = await getDocs(q);
+            const participants = applicationSnapshots.docs.map(doc => doc.data());
+            return participants;
+            
+    }
+    async function getUsers(userIds: string[]) {
+        const userInfo = [] as any[];
+        const userPromises = userIds.map(userId => {
+          const userDocRef = doc(firestore, "users", userId);
+          return getDoc(userDocRef);
+        });
+      
+        const userSnapshots = await Promise.all(userPromises);
+        userSnapshots.forEach(doc => {
+            userInfo.push({
+                id:doc.id,
+                ...doc.data()
+            })
+        })
+        return userInfo
+      }
+      async function getEventParticipantsWithUserInfo(eventId: string) {
+        const participants = await getEventParticipants(eventId);
+        const userInfo = await getUsers(participants.map((user: any) => user.user_id));
+        console.log(userInfo);
+        return participants.map(participant=>({
+            ...participant,
+            userInfo: userInfo.find((info: any) => info.id === participant.user_id)
+        }))
+      }
     
-    return { createEvent, getEvent, getEvents, updateEvent, cancelEvent };
+    return { createEvent, getEvent, getEvents, updateEvent, cancelEvent, getEventParticipantsWithUserInfo };
 }

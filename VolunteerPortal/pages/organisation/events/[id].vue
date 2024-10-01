@@ -10,7 +10,7 @@ definePageMeta({
 /////////////////////////////////////////Variables///////////////////////////////////////////////////////////////////////
 const route = useRouter().currentRoute.value
 const eventData = ref<EventData | null>(); // Initialize as null
-const eventId =  route.params.id as string;  ;
+const eventId =  route.params.id as string;  
 // Fetch event data
 const fetchEvent = async () => {
   try {

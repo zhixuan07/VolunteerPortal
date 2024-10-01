@@ -71,7 +71,7 @@ onMounted(async() => {
               <NuxtLink :to="`${APPURL.ORG_EVENTS}/${event.id}`" >
                 <Icon name="tabler:edit"/>
               </NuxtLink>
-              <NuxtLink>
+              <NuxtLink :to="`${APPURL.ORG_PARTICIPANTS}/${event.id}`">
                 <Icon name="mdi:account-group" ></Icon>
               </NuxtLink>
               <button @click="cancelEvent(event.id!)">
