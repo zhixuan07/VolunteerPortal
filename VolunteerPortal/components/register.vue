@@ -29,6 +29,7 @@ const handleFileUpload = (event: Event) => {
 /////////////////////////////////////////////// Functions ////////////////////////////////////////////////////
 const register = async () => {
   saveOrganisationAccountApplication(email.value, orgName.value, phoneNumber.value, ssmNumber.value, ssmCertificate.value)
+  showConfirmation.value = true;
 };
 
 
