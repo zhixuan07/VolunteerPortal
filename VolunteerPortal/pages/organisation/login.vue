@@ -8,9 +8,9 @@ definePageMeta({
 </script>
 
 <template>
-    <div>
+    
         <Login name="Organisation Portal" :routeLocation=APPURL.ORG_DASHBOARD />
-    </div>
+    
 </template>
 
 

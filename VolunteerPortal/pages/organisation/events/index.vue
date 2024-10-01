@@ -10,7 +10,15 @@ definePageMeta({
 /////////////////////////////////////////Variables////////////////////////////////////////////////////////////////////////
 const events = ref<EventData[]>([]);
 /////////////////////////////////////////Functions////////////////////////////////////////////////////////////////////////
-console.log(events);
+const cancelEvent = async(eventId:string)=>{
+  try{
+    await useEvent().cancelEvent(eventId);
+    alert("Event cancelled successfully");
+    reloadNuxtApp();
+  }catch(error){
+    console.error("Error cancelling event:", error);
+  }
+}
 /////////////////////////////////////////Initialisations//////////////////////////////////////////////////////////////////
 onMounted(async() => {
   events.value = await useEvent().getEvents();
@@ -20,7 +28,6 @@ onMounted(async() => {
 <div class="mx-4">
   <div>
     <div class="text-3xl font-semibold ">Events</div>
-    <NuxtLink :to="`/organisation/test/${22}`">Test</NuxtLink>
     <div class=" mt-8 mb-8 w-full flex justify-between">
       <label class="input input-bordered flex items-center gap-2 w-fit ">
         <input type="text" class="grow "  placeholder="Search" />
@@ -51,7 +58,7 @@ onMounted(async() => {
           <th class="px-2 py-2">Event Title</th>
           <th>Event Date</th>
           <th>Event Status</th>
-          <th></th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -60,10 +67,17 @@ onMounted(async() => {
           <td class="py-3 px-4 border-b border-orange-200">{{ event?.date }}</td>
           <td class="py-3 px-4 border-b border-orange-200">{{ event?.status }}</td>
           <td class="py-3 px-4 border-b border-orange-200">
-            <div class="flex justify-center gap-2">
-              <NuxtLink :to="`${APPURL.ORG_EVENTS}/${event.id}/`" >
-                <Icon name="material-symbols:edit-square"/>
+            <div class="flex justify-center items-center gap-2">
+              <NuxtLink :to="`${APPURL.ORG_EVENTS}/${event.id}`" >
+                <Icon name="tabler:edit"/>
               </NuxtLink>
+              <NuxtLink>
+                <Icon name="mdi:account-group" ></Icon>
+              </NuxtLink>
+              <button @click="cancelEvent(event.id!)">
+                <Icon name="tabler:trash"  />
+              </button>
+             
               
             </div>
           </td>

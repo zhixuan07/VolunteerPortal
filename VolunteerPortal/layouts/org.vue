@@ -74,7 +74,7 @@ const toggleNav   = () => {
             <div
               class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <NuxtLink to="/admin/reports" class="font-QuicksandMedium text-white"
+              <NuxtLink to="" class="font-QuicksandMedium text-white"
                 ></NuxtLink
               >
             </div>
@@ -91,7 +91,7 @@ const toggleNav   = () => {
             <div
               class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
-              <NuxtLink class="font-QuicksandMedium text-white" to="/adminAppointment"
+              <NuxtLink class="font-QuicksandMedium text-white" to=""
                 ></NuxtLink
               >
             </div>
@@ -140,7 +140,7 @@ const toggleNav   = () => {
         </div>
       </aside>
     </div>
-
+    <!--- Mobile View   -->
     <div class="flex-grow h-screen overflow-x-auto">
       <div class="sm:hidden w-screen sticky top-0 bg-orange-500">
         <div
@@ -176,7 +176,7 @@ const toggleNav   = () => {
               href="#"
             >
               <NuxtLink
-                to="/"
+                to=""
                 class="font-QuicksandMedium text-white ml-4 text-lg"
                 >Dashboard</NuxtLink
               >

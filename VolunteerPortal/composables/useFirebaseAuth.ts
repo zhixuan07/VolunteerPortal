@@ -1,8 +1,9 @@
-import { createUserWithEmailAndPassword, getAuth,sendPasswordResetEmail,signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth,sendEmailVerification,sendPasswordResetEmail,signInWithEmailAndPassword } from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAccount } from "./useAccount";
 export function useFirebaseAuth(){
     const auth = getAuth();
+    const currentUser = auth.currentUser;
     const firestore = useFirestore()
     const {createOrganisationAccount} = useAccount();
     const loginWithCustomEmailAndPassword = async (email: string, password: string) => {
@@ -23,8 +24,8 @@ export function useFirebaseAuth(){
     const registerOrganisationAccount = async (email:string) => {
         const randomPassword = '123456'
         try{
-            await createUserWithEmailAndPassword(auth, email, randomPassword);
-            await createOrganisationAccount(email);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, randomPassword);
+            await createOrganisationAccount(email,userCredential.user.uid);
             // Send the email to the applicant
             return true;
         }catch(error){
@@ -33,6 +34,13 @@ export function useFirebaseAuth(){
             return false;
         }
        
+    }
+    const sendVerificationEmail = async () => {
+        try {
+            sendEmailVerification(currentUser!);
+        } catch (error) {
+            
+        }
     }
     const resetAccountPassword = async (email: string) => {
         try {
@@ -51,5 +59,5 @@ export function useFirebaseAuth(){
         sessionStorage.removeItem('userId');
         
     }
-    return { loginWithCustomEmailAndPassword, registerOrganisationAccount, logout, getUserUID };
+    return { loginWithCustomEmailAndPassword, registerOrganisationAccount, logout, getUserUID,resetAccountPassword, sendVerificationEmail };
 }

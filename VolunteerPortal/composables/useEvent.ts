@@ -1,26 +1,33 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc,query, documentId, where, setDoc } from "firebase/firestore";
 import { useUploadFile } from "./useUpload";
 import { useFirebaseAuth } from "./useFirebaseAuth";
+import { useToast } from "./useToast";
+import APPURL from "~/types/AppURL";
 export function useEvent(){
     const firestore = useFirestore()
     const { uploadFile } = useUploadFile();
     const userID = useFirebaseAuth().getUserUID();
     const storageLocation = 'events';
-    const createEvent = async (event: any, eventImage:any) => {
+    const toast = useToast();
+    const createEvent = async (event: EventData, eventImage:File) => {
         
         try {
+          
+          
             // Upload the event image to Firebase
             const imageURL = await uploadFile(storageLocation, eventImage);
             if(!imageURL){
-                console.error("Error uploading image");
+                toast.error("Error uploading image");
                 return false;
             }else{
-
+                console.log("Image URL:", imageURL);
                 event.image = imageURL;
-                event.orgId = userID;
+                event.orgId = userID!;
                 event.status = "ongoing";
                 const docRef = await addDoc(collection(firestore, "events"), event);
                 await setDoc(docRef, { id: docRef.id }, { merge: true });
+                toast.success("Event created successfully");
+                navigateTo(APPURL.ORG_EVENTS);
                 return true;
             }
            
@@ -36,7 +43,7 @@ export function useEvent(){
         if (docSnap.exists()) {
             return { id: docSnap.id, ...docSnap.data() as EventData };
         } else 
-            console.log("No such document!");
+            toast.error("No such document!");
             return null;
         }
     
@@ -59,23 +66,35 @@ export function useEvent(){
     const updateEvent = async (eventId: string, event:any) => {
         try {
             console.log("Updated Event",event)
-            await updateDoc(doc(firestore, "events", eventId), event);
-            console.log("Event successfully updated!");
-            return true;
+            const imageURL = await uploadFile(storageLocation, event.image);
+            if(!imageURL){
+                toast.error("Error uploading image");
+                return false;
+            }else{
+
+                event.image = imageURL;
+                await updateDoc(doc(firestore, "events", eventId), event);
+                toast.success("Event updated successfully");
+                navigateTo(APPURL.ORG_EVENTS);
+                return true;
+            }
+           
+           
         } catch (e) {
             console.error("Error updating document: ", e);
-            return false;
+            throw e
         }
     }
-    const deleteEvent = async (eventId: string) => {
+    const cancelEvent = async (eventId: string) => {
         try {
             await deleteDoc(doc(firestore, "events", eventId));
-            console.log("Document successfully deleted!");
+            toast.success("Event cancelled successfully");
             return true;
         } catch (e) {
             console.error("Error removing document: ", e);
             return false;
         }
     }
-    return { createEvent, getEvent, getEvents, updateEvent, deleteEvent };
+    
+    return { createEvent, getEvent, getEvents, updateEvent, cancelEvent };
 }

@@ -45,7 +45,7 @@ async function rejectApplication (orgId: string)  {
 }
 /////////////////////////////////////////Initialisations/////////////////////////////////////////////////////////////
 onMounted(async () => {
-    const applications = await useApplication().retreiveOrganisationApplications();
+    const applications = await useApplication().retrieveOrganisationApplications();
     orgApplications.value = applications;
 
 });

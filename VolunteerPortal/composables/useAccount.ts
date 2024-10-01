@@ -1,10 +1,12 @@
-import { getFirestore, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, addDoc, documentId, setDoc } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import bcrypt from "bcrypt";
+import { useToast } from './useToast';
 export function useAccount() {
     const db = getFirestore();
     const orgApplicationsCollection = collection(db, "organisationApplications");
     const userCollection = collection(db, "users");
+    const toast = useToast();
     const saveOrganisationAccountApplication = async (email: string, orgName: string, phoneNumber: string, ssmNumber: string, ssmCertificate: File) => {
         const emailExists = await checkFieldExists('email', email);
         const phoneNumberExists = await checkFieldExists('phoneNumber', phoneNumber);
@@ -30,12 +32,13 @@ export function useAccount() {
             alert("Registration successful");
         }
     }
-    const createOrganisationAccount = async(email:string)=>{
+    const createOrganisationAccount = async(email:string,userId:string)=>{
         //const hashedPassword = await bcrypt.hash(password, 10);
-        await addDoc(userCollection, {
+       const docRef=  await addDoc(userCollection, {
             email: email,
-            role: 'organisation'
+            role: 'organisation',
         });
+        await setDoc(docRef, { id: userId }, { merge: true });
         return true;
     }
     const checkFieldExists = async (field: string, value: string) => {

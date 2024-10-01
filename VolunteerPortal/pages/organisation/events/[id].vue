@@ -14,7 +14,6 @@ const eventId =  route.params.id as string;  ;
 // Fetch event data
 const fetchEvent = async () => {
   try {
-    console.log("Event ID", eventId);
     const event = await useEvent().getEvent(eventId)
     // Directly set eventData to the returned event
     eventData.value = event;
@@ -25,8 +24,9 @@ const fetchEvent = async () => {
 }; /////////////////////////////////////Functions///////////////////////////////////////////////////////////////////////
 const updateEvent = async(submit:EventData) => {
   try {
+      const rawData = toRaw(eventData.value);
       eventData.value = submit;
-      await useEvent().updateEvent(eventId, eventData.value);
+      await useEvent().updateEvent(eventId,rawData);
       navigateTo(APPURL.ORG_EVENTS);
       
   } catch (error) {
@@ -43,12 +43,11 @@ onMounted(async () => {
 });
 </script>
 <template>
-  {{ eventId }}
   <div class="mx-4 my-6 overflow-y-auto">
     <div class="text-2xl font-semibold">Event</div>
     
       <template v-if="eventData">
-        <EventForm :event="eventData" @submit="updateEvent" />
+        <EventForm :event="eventData" />
       </template>
       <template v-else>
         <div class="loading">Loading event data...</div>
