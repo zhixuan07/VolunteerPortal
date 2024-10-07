@@ -96,9 +96,17 @@ export function useEvent(){
         }
     }
     const getEventParticipants = async (eventId: string) => {
+        const participants = [] as any[];
             const q = query(collection(firestore,"applications"), where("event_id", "==", eventId));
             const applicationSnapshots = await getDocs(q);
-            const participants = applicationSnapshots.docs.map(doc => doc.data());
+            //const participants = applicationSnapshots.docs.map(doc => doc.data());
+            applicationSnapshots.forEach((doc) => {
+                participants.push({
+                    id:doc.id,
+                    ...doc.data()
+                })
+            });
+            console.log("Participants:", participants);
             return participants;
             
     }
