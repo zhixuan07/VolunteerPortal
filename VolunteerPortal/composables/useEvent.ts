@@ -48,6 +48,7 @@ export function useEvent(){
         }
     
     const getEvents = async () => {
+        checkEventExpried();
         const events = [] as EventData[];
         console.log("User ID:", userID);
         const q = query(collection(firestore, "events"), where("orgId", "==", userID));
@@ -67,6 +68,7 @@ export function useEvent(){
         try {
             console.log("Updated Event",event)
             const imageURL = await uploadFile(storageLocation, event.image);
+            console.log("Image URL:", imageURL);
             if(!imageURL){
                 toast.error("Error uploading image");
                 return false;
@@ -126,7 +128,7 @@ export function useEvent(){
         })
         return userInfo
       }
-      async function getEventParticipantsWithUserInfo(eventId: string) {
+    async function getEventParticipantsWithUserInfo(eventId: string) {
         const participants = await getEventParticipants(eventId);
         const userInfo = await getUsers(participants.map((user: any) => user.user_id));
         console.log(userInfo);
@@ -134,6 +136,27 @@ export function useEvent(){
             ...participant,
             userInfo: userInfo.find((info: any) => info.id === participant.user_id)
         }))
+      }
+    async function checkEventExpried(){
+        const events = [] as EventData[];
+        const q = query(collection(firestore, "events"), where("orgId", "==", userID));
+        const querySnapshot = await getDocs(q);
+        // query the events collection that belongs to the current user id 
+        
+        querySnapshot.forEach((doc) => {
+            events.push({
+                id: doc.id,  // Get the document ID
+                ...doc.data() as EventData,  // Spread the document data
+            });
+        });
+        console.log("Events data:", events);
+        const currentDate = new Date();
+        events.forEach(async (event) => {
+            const eventDate = new Date(event.date); // Convert event.date to a Date object
+            if (eventDate < currentDate) {
+                await updateDoc(doc(collection(firestore, "events"), event.id), { status: "expired" });
+            }
+        })
       }
     
     return { createEvent, getEvent, getEvents, updateEvent, cancelEvent, getEventParticipantsWithUserInfo };
