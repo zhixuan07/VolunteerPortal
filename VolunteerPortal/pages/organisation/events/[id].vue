@@ -45,8 +45,7 @@ onMounted(async () => {
 </script>
 <template>
   <div class="mx-4 my-6 overflow-y-auto">
-    <div class="text-2xl font-semibold">Event</div>
-    
+    <div class="text-2xl font-semibold">Edit Event</div>
       <template v-if="eventData">
         <EventForm :event="eventData" />
       </template>

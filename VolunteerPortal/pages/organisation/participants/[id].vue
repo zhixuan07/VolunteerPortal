@@ -3,6 +3,7 @@
 import { useEvent } from "~/composables/useEvent";
 import { useAttendance } from "~/composables/useAttendance";
 import { ref } from "vue";
+import APPURL from "~/types/AppURL";
 /////////////////////////////////////////Meta////////////////////////////////////////////////////////////////////////////
 definePageMeta({
   middleware: "auth",
@@ -76,9 +77,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mx-4">
+  <div class="mx-4 my-2">
     <div>
-      <div class="text-3xl font-semibold my-2">Manage Participants</div>
+      <div class="text-3xl font-semibold ">Manage Participants</div>
       <div v-if="eventData">
         <EventCard :event="eventData" />
       </div>
@@ -102,9 +103,9 @@ onMounted(async () => {
           <button class="btn btn-primary text-white" @click="openModal">
           Take Attendance
         </button>
-        <button class="btn btn-primary text-white" @click="sendEmail">
-          Send Email
-        </button>
+        <NuxtLink class="btn btn-primary text-white" :to="APPURL.ORG_REMINDERS+`/${eventId}`">
+         Attendance Reminder
+        </NuxtLink>
         </div>
        
       </div>
@@ -181,3 +182,4 @@ onMounted(async () => {
 </template>
 
 <style scoped></style>
+~/components/composables/useEvent~/components/composables/useAttendance
