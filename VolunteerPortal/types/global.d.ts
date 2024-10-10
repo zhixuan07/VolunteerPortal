@@ -7,9 +7,10 @@ interface EventData {
     role: string;
     date: string;
     eventType: string;
+    tags: string[];
     startTime: string;
     endTime: string;
     location: string;
     status: string;
-    image?: File | string; // Either a File object or a URL string
+    image:  string; // Either a File object or a URL string
   }
