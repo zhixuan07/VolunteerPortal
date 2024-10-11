@@ -20,7 +20,12 @@ definePageMeta({
 <template>
   <div class="min-h-screen">
     <div class="ml-8 mr-8">
-      <NuxtLink :to="APPURL.ORG_EVENTS" class="flex items-center gap-2"><Icon name="mdi:arrow-back" ></Icon>Back</NuxtLink>
+      <div class="breadcrumbs text-md">
+      <ul>
+        <li><NuxtLink :to="APPURL.ORG_EVENTS" >Events</NuxtLink></li>
+        <li><NuxtLink>Create Event</NuxtLink></li>
+      </ul>
+    </div>
       <div class="overflow-y-auto px-2">
         <EventForm  />
       </div>

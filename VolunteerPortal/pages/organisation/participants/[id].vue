@@ -79,7 +79,12 @@ onMounted(async () => {
 <template>
   <div class="mx-4 my-2">
     <div>
-      <div class="text-3xl font-semibold ">Manage Participants</div>
+      <div class="breadcrumbs text-md">
+      <ul>
+        <li><NuxtLink :to="APPURL.ORG_EVENTS" >Events</NuxtLink></li>
+        <li><NuxtLink> Manage Attendance</NuxtLink></li>
+      </ul>
+    </div>
       <div v-if="eventData">
         <EventCard :event="eventData" />
       </div>

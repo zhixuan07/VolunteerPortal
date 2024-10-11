@@ -237,7 +237,7 @@ const updateEvent = async(submit:EventData) => {
         <input
           type="text"
           class="input input-bordered w-full"
-          placeholder="Title"
+          placeholder="Name of event"
           v-model="eventData.title"
           required
         />
@@ -247,7 +247,7 @@ const updateEvent = async(submit:EventData) => {
         Purpose
         <textarea
           class="textarea h-24 textarea-bordered w-full"
-          placeholder="Overview"
+          placeholder="Why organise this event?"
           v-model="eventData.purpose"
           required
         ></textarea>
@@ -256,7 +256,7 @@ const updateEvent = async(submit:EventData) => {
         Description
         <textarea
           class="textarea h-24 textarea-bordered w-full"
-          placeholder="Description"
+          placeholder="Describe the event do" 
           v-model="eventData.description"
           required
         ></textarea>
@@ -266,7 +266,7 @@ const updateEvent = async(submit:EventData) => {
         <input
           type="text"
           class="input input-bordered w-full"
-          placeholder="Role"
+          placeholder="What are the role of volunteer in this event"
           v-model="eventData.role"
           required
         />
@@ -286,7 +286,7 @@ const updateEvent = async(submit:EventData) => {
         </select>
         <div>
           Tags
-          <VueMultiselect v-model="eventData.tags" :options="eventCategories" :multiple="true"></VueMultiselect>
+          <VueMultiselect v-model="eventData.tags" :options="eventCategories" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
         </div>
         
       </div>
@@ -337,7 +337,7 @@ const updateEvent = async(submit:EventData) => {
         />
       </div>
       <div v-if="!props.event">
-        <button class="btn btn-primary text-white">Create</button>
+        <button class="btn btn-primary text-white">Publish</button>
       </div>
       <div v-else class="flex gap-2 m-2">
         <button class="btn btn-primary text-white">Update</button>
