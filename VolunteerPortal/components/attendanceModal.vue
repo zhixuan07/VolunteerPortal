@@ -1,3 +1,48 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useAttendance } from "~/composables/useAttendance";
+import { useToast } from "~/composables/useToast";
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    required: true,
+  },
+  participants: {
+    type: Array,
+    required: true,
+  },
+
+});
+const toast = useToast();
+const emit = defineEmits(["close"]);
+const participants = ref(props.participants);
+
+const updateAttendanceStatus= async (participantId: string, status: string) => {
+  const participant :any = participants.value.find(
+    (participant: any) => participant.id === participantId
+  );
+  if (participant ) {
+    participant.attendance = status;
+   
+  }
+};
+const updateAttendance = async() => {
+  for (const participant  of participants.value){
+    await useAttendance().markAttendance(participant.id, participant.attendance);
+  }
+  toast.success("Attendance updated successfully");
+};
+
+const closeModal = () => {
+  emit("close");
+};
+
+const handleSubmit = () => {
+ updateAttendance();
+  closeModal();
+
+};
+</script>
 <template>
   <div
     v-if="isOpen"
@@ -69,47 +114,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-import { useAttendance } from "~/composables/useAttendance";
-import { useToast } from "~/composables/useToast";
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    required: true,
-  },
-  participants: {
-    type: Array,
-    required: true,
-  },
-
-});
-const toast = useToast();
-const emit = defineEmits(["close"]);
-const participants = ref(props.participants);
-
-const updateAttendanceStatus= async (participantId: string, status: string) => {
-  const participant :any = participants.value.find(
-    (participant: any) => participant.id === participantId
-  );
-  if (participant ) {
-    participant.attendance = status;
-   
-  }
-};
-const updateAttendance = async() => {
-  for (const participant  of participants.value){
-    await useAttendance().markAttendance(participant.id, participant.attendance);
-  }
-  toast.success("Attendance updated successfully");
-};
-
-const closeModal = () => {
-  emit("close");
-};
-
-const handleSubmit = () => {
- updateAttendance();
-
-};
-</script>
