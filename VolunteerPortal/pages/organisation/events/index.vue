@@ -45,7 +45,7 @@ onMounted(async() => {
         </svg>
       </label>
 
-      <button @click="navigateTo(APPURL.ORG_CREATE_EVENT)" class="btn btn-primary text-white">Add Event</button>
+      <button @click="navigateTo(APPURL.ORG_CREATE_EVENT)" class="btn btn-primary text-white">Create Event</button>
     </div>
   </div>
   <div class="overflow-x-auto">
@@ -68,8 +68,8 @@ onMounted(async() => {
           <td class="py-3 px-4 border-b border-orange-200">{{ event?.status }}</td>
           <td class="py-3 px-4 border-b border-orange-200">
             <div class="flex justify-center items-center gap-2">
-              <NuxtLink :to="`${APPURL.ORG_EVENTS}/${event.id}`" >
-                <Icon name="tabler:edit"/>
+                <NuxtLink :to="`${APPURL.ORG_EVENTS}/${event.id}`"  >
+                <Icon name="tabler:edit" />
               </NuxtLink>
               <NuxtLink :to="`${APPURL.ORG_PARTICIPANTS}/${event.id}`">
                 <Icon name="mdi:account-group" ></Icon>
