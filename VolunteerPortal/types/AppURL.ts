@@ -13,6 +13,7 @@ export  const APPURL ={
  ORG_CREATE_EVENT:'/organisation/events/createEvent',
  ORG_PARTICIPANTS:'/organisation/participants',
  ORG_REMINDERS:'/organisation/reminders',
+ ORG_PROFILE:'/organisation/profile',
 
 }
 export default APPURL;
