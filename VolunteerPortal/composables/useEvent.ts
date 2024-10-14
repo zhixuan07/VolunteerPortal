@@ -6,7 +6,7 @@ import APPURL from "~/types/AppURL";
 export function useEvent() {
     const firestore = useFirestore()
     const { uploadFile } = useUploadFile();
-    const userID = useFirebaseAuth().getUserUID();
+    const userID = sessionStorage.getItem('userId');
     const storageLocation = 'events';
     const toast = useToast();
     const createEvent = async (event: EventData) => {
@@ -68,9 +68,15 @@ export function useEvent() {
         }
     }
     const cancelEvent = async (eventId: string) => {
+
         try {
+            if(eventId === null || eventId === undefined){
+            toast.error("Event ID is null or undefined");
+            return;
+        }
             await deleteDoc(doc(firestore, "events", eventId));
             toast.success("Event cancelled successfully");
+            reloadNuxtApp();
             return true;
         } catch (e) {
             console.error("Error removing document: ", e);
