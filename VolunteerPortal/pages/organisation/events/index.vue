@@ -11,19 +11,25 @@ definePageMeta({
 const events = ref<EventData[]>([]);
 const cancelModalOpen = ref(false);
 const event_ID = ref<string>("");
+const searchEventName = ref("");
 /////////////////////////////////////////Functions////////////////////////////////////////////////////////////////////////
 const cancelEvent = async (eventId: string) => {
   try {
     await useEvent().cancelEvent(eventId);
-    
   } catch (error) {
     console.error("Error cancelling event:", error);
   }
 };
-const openCancelModal = (eventID:string ) => {
+const openCancelModal = (eventID: string) => {
   cancelModalOpen.value = true;
   event_ID.value = eventID;
 };
+const filteredEvents = computed(() => {
+  if (!searchEventName.value) return events.value;
+  return events.value.filter((event) =>
+    event.title.toLowerCase().includes(searchEventName.value.toLowerCase())
+  );
+});
 /////////////////////////////////////////Initialisations//////////////////////////////////////////////////////////////////
 onMounted(async () => {
   events.value = await useEvent().getEvents();
@@ -35,7 +41,12 @@ onMounted(async () => {
       <div class="text-3xl font-semibold">Events</div>
       <div class="mt-8 mb-8 w-full flex justify-between">
         <label class="input input-bordered flex items-center gap-2 w-fit">
-          <input type="text" class="grow" placeholder="Search" />
+          <input
+            type="text"
+            v-model="searchEventName"
+            class="grow"
+            placeholder="Search"
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -60,10 +71,12 @@ onMounted(async () => {
     </div>
     <div class="overflow-x-auto">
       <div
-        v-if="events.length === 0"
+        v-if="filteredEvents.length === 0"
         class="text-2xl w-full h-full flex justify-center text-slate-400"
       >
-        No Events Show
+        {{
+          events.length === 0 ? "No Events Show" : "No matching events found"
+        }}
       </div>
       <table v-else class="tabel-auto w-full bg-white shadow-md rounded-lg">
         <thead>
@@ -75,7 +88,11 @@ onMounted(async () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(event, index) in events" :key="index" class="text-center">
+          <tr
+            v-for="(event, index) in filteredEvents"
+            :key="index"
+            class="text-center"
+          >
             <td class="py-3 px-4 border-b border-orange-200">
               {{ event.title }}
             </td>
