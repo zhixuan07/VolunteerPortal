@@ -3,6 +3,7 @@
 import { ref } from "vue";
 import { useEvent } from "~/composables/useEvent";
 import {useReminder} from "~/composables/useReminder";
+import APPURL from "~/types/AppURL";
 /////////////////////////////////////////Meta////////////////////////////////////////////////////////////////////////////
 definePageMeta({
   middleware: "auth",
@@ -56,7 +57,12 @@ onMounted(async () => {
 </script>
 <template>
   <div class="mx-4 my-2">
-    <h1 class="text-2xl font-semibold">Email To Attendance</h1>
+    <div class="breadcrumbs text-md">
+      <ul>
+        <li><NuxtLink :to="APPURL.ORG_EVENTS" >Events</NuxtLink></li>
+        <li><NuxtLink>Email Attendees</NuxtLink></li>
+      </ul>
+    </div>
     <form @submit.prevent="sendReminderEmail" class="space-y-2">
       <div class="">
         <h1>Name</h1>
@@ -68,7 +74,7 @@ onMounted(async () => {
           required
         />
       </div>
-      <div>
+      <div class="flex flex-col">
         <h1>Reply To</h1>
         <input
           placeholder="Reply To"
@@ -107,7 +113,7 @@ onMounted(async () => {
       <div class="flex flex-col">
         <h1>Subject</h1>
         <input
-          placeholder="Name"
+          placeholder="Subject"
           type="text"
           class="input input-bordered"
           v-model="emailInfo.subject"
@@ -116,16 +122,15 @@ onMounted(async () => {
       </div>
       <div class="flex flex-col">
         <h1>Message</h1>
-        <input
-          placeholder="Name"
-          type="text"
-          class="input input-bordered"
+        <textarea
+          placeholder="Message"
+          class="textarea textarea-bordered h-60" 
           v-model="emailInfo.message"
           required
-        />
+        ></textarea>
       </div>
       <div>
-        <button class="btn btn-primary">Send Email</button>
+        <button class="btn btn-primary text-white">Send Email</button>
       </div>
     </form>
   </div>
