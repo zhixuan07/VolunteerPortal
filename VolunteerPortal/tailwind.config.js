@@ -15,6 +15,7 @@ export default {
       {
         'mytheme': {
           'primary': '#FF4800',
+          'secondary': '#CACACAFF',
         }
       }],
   }

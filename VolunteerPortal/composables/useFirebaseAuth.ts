@@ -1,8 +1,10 @@
 import { createUserWithEmailAndPassword, getAuth,sendEmailVerification,sendPasswordResetEmail,signInWithEmailAndPassword } from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAccount } from "./useAccount";
+import { useToast } from "./useToast";
 export function useFirebaseAuth(){
     const auth = getAuth();
+    const toast = useToast();
     const currentUser = auth.currentUser;
     const firestore = useFirestore()
     const {createOrganisationAccount} = useAccount();
@@ -13,7 +15,7 @@ export function useFirebaseAuth(){
             //const idToken = await user.getIdToken();
             const userID = user.uid;
             sessionStorage.setItem('userId',userID );
-            alert('Login Successful');
+            toast.success('Login Successful');
             return true;
         } catch (error) {
             console.error(error);
