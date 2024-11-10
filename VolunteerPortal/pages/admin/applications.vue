@@ -60,8 +60,8 @@ onMounted(async () => {
           <th class="px-4 py-2">Organisation Name</th>
           <th class="px-4 py-2">Email</th>
           <th class="px-4 py-2">Phone Number</th>
-          <th class="px-4 py-2">SSM Number</th>
-          <th class="px-4 py-2">SSM Certificate</th>
+         
+          <th class="px-4 py-2">Supported Document</th>
           <th class="px-4 py-2">Status</th>
           <th class="px-4 py-2">Action</th>
         </tr>
@@ -71,10 +71,10 @@ onMounted(async () => {
           <td class="border px-4 py-2">{{ org.orgName }}</td>
           <td class="border px-4 py-2">{{ org.email }}</td>
           <td class="border px-4 py-2">{{ org.phoneNumber }}</td>
-          <td class="border px-4 py-2">{{ org.ssmNumber }}</td>
+
           <td class="border px-4 py-2">
             <a :href="org.ssmCertificateUrl" target="_blank" class="text-orange-600 hover:underline">
-              View Certificate
+              View Document
             </a>
           </td>
           <td class="border px-4 py-2">

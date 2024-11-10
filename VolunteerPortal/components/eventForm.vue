@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import APPURL from '~/types/AppURL';
-
 /////////////////////////////////////////Imports//////////////////////////////////////////////////////////////////////////
-
+import APPURL from '~/types/AppURL';
+import { useEventCategories } from '~/composables/useEventCategory';
+import { useSoftSkills } from '~/composables/useSoftSkills';
+import { useUploadFile } from '#imports';
+import VueMultiselect from 'vue-multiselect'
 /////////////////////////////////////////Meta////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////Variables///////////////////////////////////////////////////////////////////////
 const emit = defineEmits(["submit"]);
+const eventCategories = useEventCategories();
+const softSkills = useSoftSkills();
 const props = defineProps({
   event: {
     type: Object as () => EventData | null,
@@ -29,38 +33,21 @@ const eventData = ref<EventData>({
   orgId: props.event?.orgId || "",
   role: props.event?.role || "",
   date: props.event?.date || "",
-  eventType: props.event?.eventType || "",
+  eventType: props.event?.eventType || [],
+  tags: props.event?.tags || [],
   startTime: props.event?.startTime || "",
   endTime: props.event?.endTime || "",
   location: props.event?.location || "",
   status: props.event?.status || "",
-  image: props.event?.image  ,
+  image: props.event?.image ||"" ,
+
 });
-const volunteerEventTypes = [
-  "Community Outreach and Support",
-  "Environmental Conservation",
-  "Disaster Relief and Humanitarian Aid",
-  "Skills-Based Volunteering",
-  "International Development",
-  "Animal Rescue and Care",
-  "Teaching and Education",
-  "Working with Children and Youth",
-  "Community Development",
-  "Elderly Support",
-  "Sports and Leisure",
-  "Farm Work",
-  "Climate Change",
-];
 
 const isEditing = computed(() => !!props.event);
+const useUpload = useUploadFile();
+
 /////////////////////////////////////////Functions///////////////////////////////////////////////////////////////////////
-const handleFileUpload = (event: Event) => {
-  event.preventDefault();
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files[0]) {
-    eventData.value.image = target.files[0];
-  }
-};
+
 const validateTimeInterval=(startTime:any,endTime:any)=>{
   const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${endTime}:00`);
@@ -98,7 +85,7 @@ const handleSubmit = (event:any) => {
     updateEvent(eventData.value);
 
   } else {
-    createEvent(eventData.value, eventData.value.image as File);
+    createEvent(eventData.value);
     
   }
 
@@ -113,11 +100,16 @@ const triggerFileUpload = (event: Event): void => {
 };
 
 // Handle file input change event
-const handleFileChange = (event: Event): void => {
+const handleFileChange =async  (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files ? target.files[0] : null;
   if (file) {
-    eventData.value.image = file;
+    const image = await useUpload.uploadFile('events', file);
+    if (!image) {
+      alert("Error uploading image");
+      return;
+    }
+    eventData.value.image = image;
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result) {
@@ -133,15 +125,14 @@ const deleteImagePreview = (event:Event) => {
   imagePreview.value = null;
   eventData.value.image = '';
 };
-async function createEvent(eventData:any, eventImage:File) {
+async function createEvent(eventData:any) {
   try {
     if (!eventData.image) {
       throw new Error("No image file selected");
     }
 
     const rawData = toRaw(eventData);
-    console.log(rawData);
-    const createEvent = await useEvent().createEvent(rawData, eventImage);
+    const createEvent = await useEvent().createEvent(rawData);
     if (createEvent) {
       navigateTo(APPURL.ORG_EVENTS);
     } else {
@@ -172,7 +163,7 @@ const updateEvent = async(submit:EventData) => {
 </script>
 <template>
   <div>
-    <form @submit.prevent="handleSubmit" class="space-y-3 mb-2 mt-2">
+    <form @submit.prevent="handleSubmit"  class="space-y-3 mb-2 mt-2">
       <div
         class="  border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col justify-center items-center bg-gray-50 hover:bg-gray-100 transition-colors"
       >
@@ -248,7 +239,7 @@ const updateEvent = async(submit:EventData) => {
         <input
           type="text"
           class="input input-bordered w-full"
-          placeholder="Title"
+          placeholder="Name of event"
           v-model="eventData.title"
           required
         />
@@ -258,7 +249,7 @@ const updateEvent = async(submit:EventData) => {
         Purpose
         <textarea
           class="textarea h-24 textarea-bordered w-full"
-          placeholder="Overview"
+          placeholder="Why organise this event?"
           v-model="eventData.purpose"
           required
         ></textarea>
@@ -267,7 +258,7 @@ const updateEvent = async(submit:EventData) => {
         Description
         <textarea
           class="textarea h-24 textarea-bordered w-full"
-          placeholder="Description"
+          placeholder="Describe the event do" 
           v-model="eventData.description"
           required
         ></textarea>
@@ -277,7 +268,7 @@ const updateEvent = async(submit:EventData) => {
         <input
           type="text"
           class="input input-bordered w-full"
-          placeholder="Role"
+          placeholder="What are the role of volunteer in this event"
           v-model="eventData.role"
           required
         />
@@ -286,15 +277,13 @@ const updateEvent = async(submit:EventData) => {
     
       <div class="flex flex-col">
         Event type
-        <select v-model="eventData.eventType" class="select select-bordered w-full max-w-xs" required>
-          <option
-            v-for="eventType in volunteerEventTypes"
-            :key="eventType"
-            :value="eventType"
-          >
-            {{ eventType }}
-          </option>
-        </select>
+        <VueMultiselect v-model="eventData.eventType" :options="eventCategories" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
+       
+        <div>
+          Tags
+          <VueMultiselect v-model="eventData.tags" :options="softSkills" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
+        </div>
+        
       </div>
       <div class="flex flex-row gap-4">
         <div>
@@ -343,10 +332,10 @@ const updateEvent = async(submit:EventData) => {
         />
       </div>
       <div v-if="!props.event">
-        <button class="btn btn-primary">Create</button>
+        <button class="btn btn-primary text-white">Publish</button>
       </div>
       <div v-else class="flex gap-2 m-2">
-        <button class="btn btn-primary">Update</button>
+        <button class="btn btn-primary text-white">Update</button>
         
       </div>
     </form>
@@ -354,3 +343,4 @@ const updateEvent = async(submit:EventData) => {
 </template>
 
 <style scoped></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

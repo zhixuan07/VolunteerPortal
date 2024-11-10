@@ -1,9 +1,8 @@
-import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, addDoc } from "firebase/firestore";
 import { useFirebaseAuth } from "./useFirebaseAuth";
 
 export function useApplication() {
     const db = getFirestore();
-
     const retrieveOrganisationApplications = async () => {
         const orgApplications: any[] = [];
         const querySnapshot = await getDocs(collection(db, "organisationApplications"));
@@ -13,6 +12,7 @@ export function useApplication() {
                 ...doc.data()
             });
         });
+        console.log(orgApplications);
         return orgApplications;
     };
 
@@ -24,8 +24,8 @@ export function useApplication() {
             if (orgSnap.exists()) {
                 const orgData = orgSnap.data();
                 const orgEmail = orgData.email;
-
-                const accountRegistered = await useFirebaseAuth().registerOrganisationAccount(orgEmail);
+                
+                const accountRegistered = await useFirebaseAuth().registerOrganisationAccount(orgEmail,orgData.orgName,orgData.phoneNumber);
                 if (accountRegistered) {
                     await updateDoc(orgRef, { status: "approved" });
                     return true;

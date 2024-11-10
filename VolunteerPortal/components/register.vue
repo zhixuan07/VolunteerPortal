@@ -2,24 +2,20 @@
 definePageMeta({
   layout: "auth",
 });
-const errorMessage = ref("");
-import {
-  getStorage,
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-import { getDatabase, ref as dbRef, push, get, query } from "firebase/database";
+
 import APPURL from "~/types/AppURL";
-import {useAccount} from "@/composables/useAccount"
+import { useAccount } from "@/composables/useAccount";
 /////////////////////////////////////////////// Variables ////////////////////////////////////////////////////
 const orgName = ref("");
+const acceptedTerms = ref(false);
+const errorMessage = ref("");
 const email = ref("");
 const phoneNumber = ref("");
 const ssmNumber = ref("");
 const ssmCertificate = ref<File | null>(null);
 const showConfirmation = ref(false);
-const saveOrganisationAccountApplication = useAccount().saveOrganisationAccountApplication;
+const saveOrganisationAccountApplication =
+  useAccount().saveOrganisationAccountApplication;
 const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
@@ -28,11 +24,19 @@ const handleFileUpload = (event: Event) => {
 };
 /////////////////////////////////////////////// Functions ////////////////////////////////////////////////////
 const register = async () => {
-  saveOrganisationAccountApplication(email.value, orgName.value, phoneNumber.value, ssmNumber.value, ssmCertificate.value)
-  showConfirmation.value = true;
+  if (!acceptedTerms.value) {
+    errorMessage.value = "Please accept the terms and conditions";
+    return;
+  } else {
+    saveOrganisationAccountApplication(
+      email.value,
+      orgName.value,
+      phoneNumber.value,
+      ssmCertificate.value
+    );
+    showConfirmation.value = true;
+  }
 };
-
-
 
 const closeConfirmation = () => {
   showConfirmation.value = false;
@@ -87,21 +91,9 @@ const closeConfirmation = () => {
             />
           </div>
 
-          <!-- SSM Number Field -->
-          <div class="mb-4">
-            <label class="block mb-2 sm:text-sm">SSM Registration Number</label>
-            <input
-              class="rounded shadow appearance-none border px-2 py-2 w-full"
-              type="text"
-              placeholder="SSM Number"
-              v-model="ssmNumber"
-              required
-            />
-          </div>
-
           <!-- SSM Certification File Upload -->
           <div class="mb-4">
-            <label class="block mb-2 sm:text-sm">SSM Certification</label>
+            <label class="block mb-2 sm:text-sm">Supported Document</label>
             <input
               @change="handleFileUpload"
               type="file"
@@ -109,6 +101,23 @@ const closeConfirmation = () => {
               class="file-input file-input-bordered w-full"
               required
             />
+          </div>
+          <div class="flex items-center mb-4">
+            <input
+              type="checkbox"
+              id="terms"
+              v-model="acceptedTerms"
+              class="mr-2 leading-tight"
+            />
+            <label for="terms" class="text-sm">
+              I agree to the
+              <NuxtLink
+                to="/organisation/terms"
+                target="_blank"
+                class="text-blue-500 underline"
+                >Terms and Conditions</NuxtLink>
+              
+            </label>
           </div>
 
           <!-- Error Message Display -->
@@ -145,21 +154,19 @@ const closeConfirmation = () => {
       </div>
     </div>
     <div v-if="showConfirmation" class="flex items-center justify-center">
-    <div class="bg-yellow-200 p-4 rounded shadow-lg text-center">
-      <p>
-        Your registration has been submitted. Please wait for admin approval.
-      </p>
-      <button
-        @click="closeConfirmation"
-        class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Back to Login
-      </button>
+      <div class="bg-yellow-200 p-4 rounded shadow-lg text-center">
+        <p>
+          Your registration has been submitted. Please wait for admin approval.
+        </p>
+        <button
+          @click="closeConfirmation"
+          class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Back to Login
+        </button>
+      </div>
     </div>
   </div>
-  </div>
-
- 
 </template>
 
 <style scoped></style>

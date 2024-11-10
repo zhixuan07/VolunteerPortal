@@ -1,11 +1,15 @@
 import { createUserWithEmailAndPassword, getAuth,sendEmailVerification,sendPasswordResetEmail,signInWithEmailAndPassword } from "firebase/auth";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAccount } from "./useAccount";
+import { useToast } from "./useToast";
+import { addDoc, collection } from "firebase/firestore";
 export function useFirebaseAuth(){
     const auth = getAuth();
+    const toast = useToast();
     const currentUser = auth.currentUser;
     const firestore = useFirestore()
     const {createOrganisationAccount} = useAccount();
+    const orgProfileCollection = collection(firestore, "organiserDetails");
     const loginWithCustomEmailAndPassword = async (email: string, password: string) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -13,7 +17,7 @@ export function useFirebaseAuth(){
             //const idToken = await user.getIdToken();
             const userID = user.uid;
             sessionStorage.setItem('userId',userID );
-            alert('Login Successful');
+            toast.success('Login Successful');
             return true;
         } catch (error) {
             console.error(error);
@@ -21,11 +25,16 @@ export function useFirebaseAuth(){
             return false;
         }
     }
-    const registerOrganisationAccount = async (email:string) => {
+    const registerOrganisationAccount = async (orgEmail:string,orgName:string,phoneNumber:string) => {
         const randomPassword = '123456'
         try{
-            const userCredential = await createUserWithEmailAndPassword(auth, email, randomPassword);
-            await createOrganisationAccount(email,userCredential.user.uid);
+            const userCredential = await createUserWithEmailAndPassword(auth, orgEmail, randomPassword);
+            await createOrganisationAccount(orgEmail,userCredential.user.uid);
+            const orgProfileRef = addDoc(orgProfileCollection,{
+                email: orgEmail,
+                name: orgName,
+                phoneNumber: phoneNumber,
+            })
             // Send the email to the applicant
             return true;
         }catch(error){
