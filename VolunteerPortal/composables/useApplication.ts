@@ -3,7 +3,6 @@ import { useFirebaseAuth } from "./useFirebaseAuth";
 
 export function useApplication() {
     const db = getFirestore();
-    const orgProfileCollection = collection(db, "organisationDetails");
     const retrieveOrganisationApplications = async () => {
         const orgApplications: any[] = [];
         const querySnapshot = await getDocs(collection(db, "organisationApplications"));
@@ -13,6 +12,7 @@ export function useApplication() {
                 ...doc.data()
             });
         });
+        console.log(orgApplications);
         return orgApplications;
     };
 

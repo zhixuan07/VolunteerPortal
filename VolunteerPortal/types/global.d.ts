@@ -6,7 +6,7 @@ interface EventData {
     description: string;
     role: string;
     date: string;
-    eventType: string;
+    eventType: string[];
     tags: string[];
     startTime: string;
     endTime: string;

@@ -11,34 +11,31 @@ export function useAccount() {
     const orgProfileCollection = collection(db, "organiserDetails");
     const userID = sessionStorage.getItem('userId');
     const toast = useToast();
-    const saveOrganisationAccountApplication = async (email: string, orgName: string, phoneNumber: string, ssmNumber: string, ssmCertificate: File) => {
+    const saveOrganisationAccountApplication = async (email: string, orgName: string, phoneNumber: string, ssmCertificate: File) => {
         const emailExists = await checkFieldExists('email', email);
         const phoneNumberExists = await checkFieldExists('phoneNumber', phoneNumber);
-        const ssmNumberExists = await checkFieldExists('ssmNumber', ssmNumber);
+
 
         if (emailExists) {
             alert('Email already exists');
         } else if (phoneNumberExists) {
             alert('Phone number already exists');
-        } else if (ssmNumberExists) {
-            alert('SSM number already exists');
         } else {
             const ssmCertificateURL = await uploadSSMCertificate(ssmCertificate);
-            
+
             await addDoc(orgApplicationsCollection, {
                 orgName: orgName,
                 email: email,
                 phoneNumber: phoneNumber,
-                ssmNumber: ssmNumber,
                 ssmCertificateUrl: ssmCertificateURL,
                 status: "pending", // Mark the application as pending approval
             });
             alert("Registration successful");
         }
     }
-    const createOrganisationAccount = async(email:string,userId:string)=>{
+    const createOrganisationAccount = async (email: string, userId: string) => {
         //const hashedPassword = await bcrypt.hash(password, 10);
-       const docRef=  await addDoc(userCollection, {
+        const docRef = await addDoc(userCollection, {
             email: email,
             role: 'organisation',
         });
@@ -59,15 +56,15 @@ export function useAccount() {
         try {
             const q = query(userCollection, where('email', '==', email));
             const querySnapshot = await getDocs(q);
-            if(querySnapshot.empty){
+            if (querySnapshot.empty) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         } catch (error) {
             console.error("Error checking user account existence:", error);
             return false;
-            
+
         }
     };
 
@@ -80,25 +77,69 @@ export function useAccount() {
             return downloadURL;
         }
     };
-    const getProfile = async ()=>{
-        
+    const getProfile = async () => {
+
         const q = query(orgProfileCollection, where('user_id', '==', userID));
         const querySnapshot = await getDocs(q);
-        if(querySnapshot.empty){
+        if (querySnapshot.empty) {
             console.log('No such document');
             return null;
-        }else{
-          return { doc_id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() as OrganiserDetails };
+        } else {
+            return { doc_id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() as OrganiserDetails };
         }
     }
-    const updateProfile = async (profile:any) => {
+    const updateProfile = async (profile: any) => {
         try {
-            await updateDoc(doc(firestore,"organiserDetails",profile.doc_id),profile);
+            await updateDoc(doc(firestore, "organiserDetails", profile.doc_id), profile);
             toast.success("Profile updated successfully");
         } catch (error) {
             toast.error("Error updating profile");
         }
     };
-
-    return { saveOrganisationAccountApplication,createOrganisationAccount,checkUserAccountExists,getProfile,updateProfile };
+    const getOrganisationAccountDetails = async () => {
+        const querySnapshot = await getDocs(orgProfileCollection)
+        const organisationAccount = [] as any[];
+        querySnapshot.forEach((doc) => {
+            organisationAccount.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        return organisationAccount;
+    }
+    const lockOrganisationAccount = async (orgId: string) => {
+        try {
+            const q = query(orgProfileCollection, where('user_id', '==', orgId));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                console.log('No such document');
+                return null;
+            } else {
+                const doc_id = querySnapshot.docs[0].id;
+                await updateDoc(doc(orgProfileCollection, doc_id), { status: "locked" });
+                return true;
+            }
+        } catch (error) {
+            console.error("Error locking organisation account:", error);
+            return false;
+        }
+    };
+    const unlockOrganisationAccount = async (orgId: string) => {
+        try {
+            const q = query(orgProfileCollection, where('user_id', '==', orgId));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                console.log('No such document');
+                return null;
+            } else {
+                const doc_id = querySnapshot.docs[0].id;
+                await updateDoc(doc(orgProfileCollection, doc_id), { status: "unlocked" });
+                return true;
+            }
+        } catch (error) {
+            console.error("Error unlocking organisation account:", error);
+            return false;
+        }
+    }
+    return { saveOrganisationAccountApplication, createOrganisationAccount, checkUserAccountExists, getProfile, updateProfile, getOrganisationAccountDetails, lockOrganisationAccount, unlockOrganisationAccount };
 }

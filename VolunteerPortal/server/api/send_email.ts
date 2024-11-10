@@ -2,32 +2,30 @@ import { defineEventHandler, readBody } from 'h3';
 import nodemailer from 'nodemailer';
 
 export default defineEventHandler(async (event) => {
-  // Read the request body
+  
   const body = await readBody(event);
 
-  // Create a transporter object using SMTP transport
   const transporter = nodemailer.createTransport({
-    //aservice: "Gmail",
-    host: "smtp.gmail.com", // Replace with your SMTP server
+    
+    host: "smtp.gmail.com", 
     port: 465,
     //host: 'smtp.ethereal.email',
     //port: 587,
     auth: {
-     user: 'zhixuanchu3131@gmail.com', // Replace with your email
-     pass: 'nprpaebmumaudoow', // Replace with your email password
-     //user:"merle.adams@ethereal.email",
-     //pass:"VjjJqf74pDQmMD5tWn"
+     user: 'zhixuanchu3131@gmail.com', 
+     pass: 'nprpaebmumaudoow', 
+    
     },
   });
 
-  // Set up email data
+
   const mailOptions = {
-    from: 'VConnect', // Sender address
-    replyTo: body.replyTo, // Reply to address
-    to: body.to, // List of receivers
-    subject: body.subject, // Subject line
-    text: body.message, // Plain text body
-    html: body.html, // HTML body
+    from: 'VConnect',
+    replyTo: body.replyTo, 
+    to: body.to, 
+    subject: body.subject, 
+    text: body.message, 
+  
   };
 
   try {

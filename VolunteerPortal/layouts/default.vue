@@ -74,7 +74,7 @@ const toggleNav   = () => {
               class="group-hover:bg-white/10 w-full group-active:scale-95 self-stretch pl-2 rounded flex items-center space-x-2 transition-all duration-200 text-sm"
             >
               <NuxtLink to="/admin/reports" class="font-QuicksandMedium text-white"
-                ></NuxtLink
+                >Reports</NuxtLink
               >
             </div>
           </div>

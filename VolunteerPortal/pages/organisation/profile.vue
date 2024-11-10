@@ -38,7 +38,7 @@ onMounted(async () => {
           <h1>Phone Number</h1>
           <input type="text" v-model="orgDetails.phoneNumber" class="input input-bordered">
           <h1>Organisation Description</h1>
-          <textarea v-model="orgDetails.description" class="textarea textarea-bordered"></textarea>
+          <textarea v-model="orgDetails.description" class="textarea textarea-bordered h-96"></textarea>
           <button type="submit" class="btn btn-primary text-white">Update</button>
         </form>
         <p v-else>Loading profile data...</p>

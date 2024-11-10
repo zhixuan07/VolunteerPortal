@@ -60,20 +60,12 @@ onMounted(async () => {
     <div class="breadcrumbs text-md">
       <ul>
         <li><NuxtLink :to="APPURL.ORG_EVENTS" >Events</NuxtLink></li>
-        <li><NuxtLink>Email Attendees</NuxtLink></li>
+        <li><NuxtLink :to="`${APPURL.ORG_PARTICIPANTS}/${eventId}`"> Manage Attendance</NuxtLink></li>
+        <li><NuxtLink>Email Participants</NuxtLink></li>
       </ul>
     </div>
     <form @submit.prevent="sendReminderEmail" class="space-y-2">
-      <div class="">
-        <h1>Name</h1>
-        <input
-          placeholder="Name"
-          type="text"
-          class="input input-bordered"
-          v-model="emailInfo.name"
-          required
-        />
-      </div>
+      
       <div class="flex flex-col">
         <h1>Reply To</h1>
         <input
@@ -88,8 +80,8 @@ onMounted(async () => {
       <div class="flex flex-col">
         <h1>To</h1>
         <select v-model="emailTo" class="select select-bordered">
-          <option value="1" selected>All Attendees</option>
-          <option value="2">Specific Attendees</option>
+          <option value="1" selected>All Participants</option>
+          <option value="2">Specific participant</option>
         </select>
         <div v-if="emailTo === '2'">
         <table class="table-auto w-full bg-white rounded-lg">

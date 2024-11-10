@@ -30,37 +30,11 @@ const fetchEvent = async () => {
     const event = await useEvent().getEvent(eventId);
     // Directly set eventData to the returned event
     eventData.value = event;
-    console.log("Event data:", eventData.value);
+    
   } catch (error) {
     console.error("Error fetching event:", error);
   }finally{
 
-  }
-};
-const email = ref({
-  to: "zhixuanchu3131@gmail.com",
-  subject: "Reminder for event",
-  text: "Please remember to attend the event tomorrow!",
-});
-
-const sendEmail = async () => {
-  try {
-    const response = await fetch("/api/send_email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(email.value),
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      alert("Email sent successfully!");
-    } else {
-      alert("Failed to send email.");
-      console.error(result.error);
-    }
-  } catch (error) {
-    console.error("Error:", error);
   }
 };
 
@@ -109,7 +83,7 @@ onMounted(async () => {
           Take Attendance
         </button>
         <NuxtLink class="btn btn-primary text-white" :to="APPURL.ORG_REMINDERS+`/${eventId}`">
-         Attendance Reminder
+         Email Participants
         </NuxtLink>
         </div>
        
@@ -177,6 +151,7 @@ onMounted(async () => {
       <AttendanceModal
       v-if="isModalOpen"
       :isOpen="isModalOpen"
+      :eventId="eventId"
       :participants="participants"
       @close="isModalOpen = false"
       

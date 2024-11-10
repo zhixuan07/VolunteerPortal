@@ -2,6 +2,7 @@
 /////////////////////////////////////////Imports//////////////////////////////////////////////////////////////////////////
 import APPURL from '~/types/AppURL';
 import { useEventCategories } from '~/composables/useEventCategory';
+import { useSoftSkills } from '~/composables/useSoftSkills';
 import { useUploadFile } from '#imports';
 import VueMultiselect from 'vue-multiselect'
 /////////////////////////////////////////Meta////////////////////////////////////////////////////////////////////////////
@@ -9,6 +10,7 @@ import VueMultiselect from 'vue-multiselect'
 /////////////////////////////////////////Variables///////////////////////////////////////////////////////////////////////
 const emit = defineEmits(["submit"]);
 const eventCategories = useEventCategories();
+const softSkills = useSoftSkills();
 const props = defineProps({
   event: {
     type: Object as () => EventData | null,
@@ -31,7 +33,7 @@ const eventData = ref<EventData>({
   orgId: props.event?.orgId || "",
   role: props.event?.role || "",
   date: props.event?.date || "",
-  eventType: props.event?.eventType || "",
+  eventType: props.event?.eventType || [],
   tags: props.event?.tags || [],
   startTime: props.event?.startTime || "",
   endTime: props.event?.endTime || "",
@@ -275,18 +277,11 @@ const updateEvent = async(submit:EventData) => {
     
       <div class="flex flex-col">
         Event type
-        <select v-model="eventData.eventType" class="select select-bordered w-full max-w-xs" required>
-          <option
-            v-for="eventType in eventCategories"
-            :key="eventType"
-            :value="eventType"
-          >
-            {{ eventType }}
-          </option>
-        </select>
+        <VueMultiselect v-model="eventData.eventType" :options="eventCategories" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
+       
         <div>
           Tags
-          <VueMultiselect v-model="eventData.tags" :options="eventCategories" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
+          <VueMultiselect v-model="eventData.tags" :options="softSkills" :multiple="true" placeholder="Tags can make easier to find the participant for the event "></VueMultiselect>
         </div>
         
       </div>

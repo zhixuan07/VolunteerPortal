@@ -13,7 +13,6 @@ export function useEvent() {
 
         try {
 
-
             event.orgId = userID!;
             event.status = "ongoing";
             const docRef = await addDoc(collection(firestore, "events"), event);
@@ -53,7 +52,6 @@ export function useEvent() {
                 ...doc.data() as EventData,  // Spread the document data
             });
         });
-        console.log("Events data:", events);
         return events;
     }
     const updateEvent = async (eventId: string, event: any) => {

@@ -11,11 +11,15 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  eventId: {
+    type: String,
+    required: true,
+  },
 
 });
 const toast = useToast();
 const emit = defineEmits(["close"]);
-const participants = ref(props.participants);
+const participants = ref(props.participants) as any;
 
 const updateAttendanceStatus= async (participantId: string, status: string) => {
   const participant :any = participants.value.find(
@@ -28,7 +32,7 @@ const updateAttendanceStatus= async (participantId: string, status: string) => {
 };
 const updateAttendance = async() => {
   for (const participant  of participants.value){
-    await useAttendance().markAttendance(participant.id, participant.attendance);
+    await useAttendance().markAttendance(participant.id, participant.attendance, props.eventId);
   }
   toast.success("Attendance updated successfully");
 };

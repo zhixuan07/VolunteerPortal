@@ -78,7 +78,7 @@ onMounted(async () => {
           events.length === 0 ? "No Events Show" : "No matching events found"
         }}
       </div>
-      <table v-else class="tabel-auto w-full bg-white shadow-md rounded-lg">
+      <table v-else class="table-auto w-full bg-white shadow-md rounded-lg">
         <thead>
           <tr class="bg-orange-400 text-white">
             <th class="px-2 py-2">Event Title</th>
